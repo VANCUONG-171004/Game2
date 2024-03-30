@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HealthBar : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class HealthBar : MonoBehaviour
     public List<AudioClip> audioClips;
     AudioSource audioSource;
     public GameManager GameManager;
+    public GameObject DeathZone;
+    public GameObject gidGround;
+    public GameObject spamcoin;
 
     [Header("Collison Info")]
     public bool isGrounded;
@@ -66,6 +70,11 @@ public class HealthBar : MonoBehaviour
 
         }
 
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            RaycastEnemy();
+        }
+
 
         timer += Time.deltaTime;
         if (timer > 30)
@@ -85,7 +94,7 @@ public class HealthBar : MonoBehaviour
         rb.velocity = new Vector2(Speed, rb.velocity.y);
         // OverlapCheckGround();
         RaycastCheckground();
-        RaycastEnemy();
+        
     }
 
     //update color heath
@@ -117,6 +126,16 @@ public class HealthBar : MonoBehaviour
             Destroy(other.gameObject);
             GameManager.SetTextScore();
             GameManager.SaveGame();
+        }
+
+        if (other.CompareTag("Zone"))
+        {
+            Debug.Log("da cham zone");
+            GameManager.Checkscore();
+            Destroy(gameObject);
+            DeathZone.SetActive(false);
+            gidGround.SetActive(false);
+            spamcoin.SetActive(false);
         }
     }
 
@@ -159,17 +178,17 @@ public class HealthBar : MonoBehaviour
 
     public void RaycastEnemy()
     {
-        RaycastHit2D hit2D = Physics2D.Raycast(enemycheck.position + Vector3.up, Vector2.right, 5f,enemyLayer);
+        RaycastHit2D hit2D = Physics2D.Raycast(enemycheck.position + Vector3.up, Vector2.right, 10f,enemyLayer);
 
         if (hit2D)
         {
-            Debug.DrawRay(enemycheck.position + Vector3.up, Vector3.right * hit2D.distance, Color.black);
-            Debug.Log("cham quai");
+            Debug.DrawRay(enemycheck.position + Vector3.up, Vector3.right * hit2D.distance, Color.red);
+            Destroy(hit2D.collider.gameObject);
 
         }
         else
         {
-            Debug.DrawRay(enemycheck.position + Vector3.up, Vector2.right * 5f, Color.green);
+            Debug.DrawRay(enemycheck.position + Vector3.up, Vector2.right * 10f, Color.green);
         }
     }
 }

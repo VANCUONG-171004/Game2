@@ -6,6 +6,7 @@ using System.Linq;
 public class randoomGrounded : MonoBehaviour
 {
     public Transform player;
+    
 
     public List<GameObject> listGround; //Danh sách miếng đất đã vẽ
     public List<GameObject> listGroundOld; //Danh sách các miếng đất đã sinh ra
@@ -17,6 +18,11 @@ public class randoomGrounded : MonoBehaviour
     private int id;
     int groundLen; //độ dài của miếng đất
     // Start is called before the first frame update
+
+
+    public GameObject plant;
+    public GameObject boar;
+    public GameObject bossleft;
     void Start()
     {
         endPos = new Vector2(20f, 0f); //Vị trí cuối cùng của map hiện tại của ô đất là 20
@@ -40,6 +46,23 @@ public class randoomGrounded : MonoBehaviour
             }
 
             endPos = new Vector2(nextPos.x + groundLen, 0f);
+
+            if (groundLen == 20)
+            {
+                SpamBoar();
+            }
+            else
+            {
+                int getEnemy = Random.Range(0, 2);
+                if (getEnemy != 0)
+                {
+                    SpamPlant();
+                }
+                else
+                {
+                    SpamBossLeft();
+                }
+            }
         }
     }
 
@@ -69,16 +92,52 @@ public class randoomGrounded : MonoBehaviour
                 }
 
                 endPos = new Vector2(nextPos.x + groundLen, 0f);
+
+                if (groundLen == 20)
+                {
+                    SpamBoar();
+                }
+                else
+                {
+                    int getEnemy = Random.Range(0, 2);
+                    if (getEnemy != 0)
+                    {
+                        SpamPlant();
+                    }
+                    else
+                    {
+                        SpamBossLeft();
+                    }
+                }
             }
         }
 
         //Lấy ra miếng đất đầu tiên trong danh sách
         GameObject getOneGround = listGroundOld.FirstOrDefault();
-        if(getOneGround != null && Vector2.Distance(player.position, getOneGround.transform.position) >100f)
+        if (getOneGround != null && Vector2.Distance(player.position, getOneGround.transform.position) > 100f)
         {
             //Nếu khoảng cách giữa người chơi và miếng đất vừa lấy ra lớn hơn 100
             listGroundOld.Remove(getOneGround); //Xóa khỏi danh sách
             Destroy(getOneGround); //Hủy gameoject
         }
+
+        
+    }
+
+    public void SpamPlant()
+    {
+        Vector3 pos = new Vector3(Random.Range(nextPos.x + 2f, endPos.x - 2f), 0, 0);
+        Instantiate(plant, pos, Quaternion.identity);
+    }
+
+    public void SpamBoar()
+    {
+        Vector3 pos = new Vector3(Random.Range(nextPos.x + 7f, endPos.x -7f), 0, 0);
+        Instantiate(boar, pos, Quaternion.identity);
+    }
+    public void SpamBossLeft()
+    {
+        Vector3 pos = new Vector3(Random.Range(endPos.x - 5, endPos.x - 2f), 0, 0);
+        Instantiate(bossleft, pos, Quaternion.identity);
     }
 }

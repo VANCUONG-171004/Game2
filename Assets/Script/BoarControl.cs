@@ -99,12 +99,12 @@ public class BoarControl : MonoBehaviour
 
         if(hitPlayer)
         {
-            Debug.DrawRay(boarcheck.position,dirition * hitPlayer.distance, Color.red);
+            // Debug.DrawRay(boarcheck.position,dirition * hitPlayer.distance, Color.red);
             
             
         }else
         {
-            Debug.DrawRay(boarcheck.position,dirition * 10f, Color.green);
+            // Debug.DrawRay(boarcheck.position,dirition * 10f, Color.green);
             
         }
     }
