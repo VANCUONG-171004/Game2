@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 8373685518132256133}
   m_Layer: 7
   m_Name: Boar_Controll
-  m_TagString: Untagged
+  m_TagString: quai
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

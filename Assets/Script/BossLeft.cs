@@ -9,6 +9,7 @@ public class BossLeft : MonoBehaviour
     private Animator anim;
 
     bool Active;
+    public float healthboar = 3;
     void Start()
     {
         SpeedMove = -3f;
@@ -28,10 +29,19 @@ public class BossLeft : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.U))
+        {
+            Destroy(gameObject);
+        }
         if (Active)
         {
             anim.Play("Enemy_BoarWallk");
             rb.velocity = new Vector2(SpeedMove,rb.velocity.y);
+        }
+
+        if (healthboar == 0)
+        {
+            Destroy(gameObject);
         }
     }
 }

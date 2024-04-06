@@ -27,6 +27,10 @@ public class Plant_Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.U))
+        {
+            Destroy(gameObject);
+        }
         timer -= Time.deltaTime;
 
         RaycatDeltextPlayer();

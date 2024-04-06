@@ -30,6 +30,7 @@ public class BoarControl : MonoBehaviour
     bool isFacingRight;
     float timer;
     private Rigidbody2D rb;
+    public float healthboarcontrol = 3;
     void Start()
     {
         rb = GetComponentInChildren<Rigidbody2D>();
@@ -38,6 +39,11 @@ public class BoarControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.U))
+        {
+            Destroy(gameObject);
+        }
+
         if (isFacingRight) //Phải di chuyển qu B
         {
             dirition = Vector3.right;
@@ -86,7 +92,10 @@ public class BoarControl : MonoBehaviour
             }
         }
 
-
+        if(healthboarcontrol == 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void FixedUpdate() {

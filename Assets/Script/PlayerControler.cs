@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class HealthBar : MonoBehaviour
 {
+
+    public AdsManager ads;
     [Header("heath info")]
     public Slider health;
 
@@ -19,6 +21,8 @@ public class HealthBar : MonoBehaviour
 
     public float thoigian = 0;
     public float timer;
+    private bool canDoubleJump;
+    
 
     [Header("Audio info")]
     public List<AudioClip> audioClips;
@@ -27,6 +31,10 @@ public class HealthBar : MonoBehaviour
     public GameObject DeathZone;
     public GameObject gidGround;
     public GameObject spamcoin;
+    public GameObject player;
+    public GameObject heathhoi;
+
+    public GameObject coinsinh;
 
     [Header("Collison Info")]
     public bool isGrounded;
@@ -60,15 +68,28 @@ public class HealthBar : MonoBehaviour
             UpdateHealthColor();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
 
-            rb.velocity = new Vector2(rb.velocity.x, jump);
-            audioSource.PlayOneShot(audioClips[2]);
-            
+            if (isGrounded )
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jump);
+                audioSource.PlayOneShot(audioClips[2]);
+                canDoubleJump = true;
+                
+            }
+            else if(canDoubleJump)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jump);
+                audioSource.PlayOneShot(audioClips[2]);
+                canDoubleJump = false;
+            }
+
 
 
         }
+
+        
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -87,6 +108,32 @@ public class HealthBar : MonoBehaviour
         anim.SetFloat("yvelocity", rb.velocity.y);
 
         // Collisonhcheck();
+        if(health.value == 0)
+        {
+            player.SetActive(false);
+            GameManager.Checkscore();
+            DeathZone.SetActive(false);
+            gidGround.SetActive(false);
+            spamcoin.SetActive(false);
+            heathhoi.SetActive(false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            if (GameManager.score >0)
+            {
+                Instantiate(coinsinh,enemycheck.position,Quaternion.identity);
+                GameManager.Trudiem();
+            }
+        }
+        // if (Input.GetKey(KeyCode.H))
+        // {
+        //     rb.velocity = new Vector2(Speed, rb.velocity.y);
+        // }
+        // else
+        // {
+        //     rb.velocity = new Vector2(0, rb.velocity.y);
+        // }
     }
 
     private void FixedUpdate()
@@ -94,7 +141,7 @@ public class HealthBar : MonoBehaviour
         rb.velocity = new Vector2(Speed, rb.velocity.y);
         // OverlapCheckGround();
         RaycastCheckground();
-        
+
     }
 
     //update color heath
@@ -130,12 +177,54 @@ public class HealthBar : MonoBehaviour
 
         if (other.CompareTag("Zone"))
         {
+            ads.ShowInterstitialAd();
             Debug.Log("da cham zone");
             GameManager.Checkscore();
             Destroy(gameObject);
             DeathZone.SetActive(false);
             gidGround.SetActive(false);
             spamcoin.SetActive(false);
+            heathhoi.SetActive(false);
+        }
+
+        if(other.CompareTag("Bullet"))
+        {
+            health.value -=20;
+            Destroy(other.gameObject);
+            UpdateHealthColor();
+        }
+
+        if (other.CompareTag("hoimau"))
+        {
+            health.value +=10;
+            Debug.Log("da cham hoi mau");
+            Destroy(other.gameObject);
+        }
+        
+    }
+
+    public void PlayerDead()
+    {
+        GameManager.Checkscore();
+            Destroy(gameObject);
+            DeathZone.SetActive(false);
+            gidGround.SetActive(false);
+            spamcoin.SetActive(false);
+            heathhoi.SetActive(false);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision2D){
+        if(collision2D.collider.tag == "quai1")
+        {
+            health.value -=20;
+            
+            UpdateHealthColor();
+        }
+        if(collision2D.collider.tag == "quai")
+        {
+            health.value -=20;
+            
+            UpdateHealthColor();
         }
     }
 
@@ -155,6 +244,7 @@ public class HealthBar : MonoBehaviour
         if (getCollider.Length > 0)
         {
             isGrounded = true;
+            canDoubleJump = false;
         }
         else
         {
@@ -163,22 +253,23 @@ public class HealthBar : MonoBehaviour
     }
 
     public void RaycastCheckground()
-    {
-        RaycastHit2D hitGround = Physics2D.Raycast(checkground.position, Vector2.down, 0.5f, whatisGround);
+{
+    RaycastHit2D hitGround = Physics2D.Raycast(checkground.position, Vector2.down, 0.5f, whatisGround);
+    RaycastHit2D hitEnemy = Physics2D.Raycast(checkground.position, Vector2.down, 0.5f, enemyLayer);
 
-        if (hitGround)
-        {
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
-        }
+    if (hitGround || hitEnemy)
+    {
+        isGrounded = true;
     }
+    else
+    {
+        isGrounded = false;
+    }
+}
 
     public void RaycastEnemy()
     {
-        RaycastHit2D hit2D = Physics2D.Raycast(enemycheck.position + Vector3.up, Vector2.right, 10f,enemyLayer);
+        RaycastHit2D hit2D = Physics2D.Raycast(enemycheck.position + Vector3.up, Vector2.right, 10f, enemyLayer);
 
         if (hit2D)
         {

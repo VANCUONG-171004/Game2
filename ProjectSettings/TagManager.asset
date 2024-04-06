@@ -8,6 +8,9 @@ TagManager:
   - Enemy
   - quai
   - Zone
+  - Bullet
+  - quai1
+  - hoimau
   layers:
   - Default
   - TransparentFX

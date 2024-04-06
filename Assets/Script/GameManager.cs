@@ -54,6 +54,11 @@ public class GameManager : MonoBehaviour
         hightsocreDeathText.text = "HightScore:" +" "+ hightscore.ToString("n0");
     }
     
+    public void Trudiem()
+    {
+        score--;
+        scoretext.text = "Score:" +" "+ score.ToString("n0");
+    }
     public void PlayerAgin()
     {
         SceneManager.LoadScene(0);
